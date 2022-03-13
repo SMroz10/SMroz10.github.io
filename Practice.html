@@ -1,26 +1,16 @@
-<title>{% if page.params.seo.title %}{{ page.params.seo.title }}{% else %}{{ page.title | append(' | ') | append( site.title ) }}{% endif %}</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="description" content="{{ page.params.seo.description | default('', true) }}" />
-{% if page.params.seo.robots %}
-<meta name="robots" content="{{ page.params.seo.robots | join(',') }}">
-{% endif %}
-{% for meta in page.params.seo.extra %}
-  {% set key_name = meta.keyName | default('name', true) %}
-  {% if meta.relativeUrl %}
-    {% if site.params.domain %}
-      {% set domain = site.params.domain | trim('/') %}
-      {% set rel_url = meta.value | relative_url %}
-      {% set full_url = domain | append(rel_url) %}
-      <meta {{ attribute(key_name, meta.name) }} content="{{ full_url }}">
-    {% endif %}
-  {% else %}
-    <meta {{ attribute(key_name, meta.name) }} content="{{ meta.value }}">
-  {% endif %}
+{% set section = include_dict.section %}
+
+<section class="content__row bulletpoints__section" data-id="{{section.section_id}}">
+{% for bulletpoint in section.bulletpoints %}
+  <section class="content__row bulletpoint__section">
+    {% set include_dict = {'image': bulletpoint.image, 'alt': bulletpoint.title, 'cssClass': 'bulletpoint__section-image'} %}
+    {% include "picture.html" %}
+    <div class="bulletpoint__section-content-container">
+      <h2 class="bulletpoint__section-title">{{ bulletpoint.title }}</h2>
+      <div class="bulletpoint__section-content">
+        {{ bulletpoint.description | markdownify }}
+      </div>
+    </div>
+  </section>
 {% endfor %}
-<link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.0.18/default/snipcart.css" />
-<link rel="stylesheet" href="{{ 'assets/css/main.css' | relative_url }}">
-{% if site.params.favicon %}
-<link rel="icon" href="{{ site.params.favicon | relative_url }}">
-{% endif %}
+</section>
